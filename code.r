@@ -1,4 +1,6 @@
-data <- read.csv("F:\\[4 - HKI]Chuyên đề 5\\minority.csv")
+data <- read.csv("D://Năm 4//Kỳ 1//Chuyên đề 5//Code R//GiuaKy//r_dataset_minority//minority.csv")
+
+library(scales)
 
 colnames(data)
 # change column name
@@ -42,8 +44,6 @@ language_family_table
 
 language_family = names(language_family_table)
 
-
-
 for(i in 1:length(language_family)){
   print(language_family[i])
   mi_name <- data$Minority_Name[data$Language_family == language_family[i]]
@@ -51,15 +51,48 @@ for(i in 1:length(language_family)){
   cat("\n")
 }
 
-
-
 View(data)
 summary(data)
-
-
-
 sapply(data, class)
 
+
+#4 - Tạo biến mới dựa trên biến đã có
+# Tính phần trăm dân số của từng dân tộc thiểu số
+# tính tổng dân số của dân tộc thiểu số
+totalPopulation = sum(data$Population)
+totalPopulation
+# tạo cột mới 'Population Percent' tính phần trăm dân số từng dân tộc 
+data$`Population_Percent` = (data$Population/totalPopulation)
+
+# đổi định dạng sang phần trăm
+data$`Population_Percent` = percent(data$`Population_Percent`, accuracy = 0.0001)
+
+#5 - Đặt câu hỏi nghiên cứu vấn đề cần biết trong dataset
+# Tính mỗi vùng miền có tổng số bao nhiêu dân, chiếm bao nhiêu phần trăm
+# đếm có bao nhiêu dân tộc của mỗi vùng miền
+region = table(d$Region)
+region
+# lấy tên các vùng miền
+arrRegionNames = names(region)
+arrRegionNames
+# tạo dataframe mới
+df = data.frame()
+
+# dùng vòng lặp lấy tên các vùng miền để tính tổng dân số của vùng miền đó
+for (i in arrRegionNames) {
+  # tính tổng dân số của vùng miền theo tên miền
+  regionPopulation = sum(data$Population[d$Region == i])
+  # tính phần trăm dân số của vùng miền theo tên miền
+  pRegionPopulation = regionPopulation/totalPopulation
+  # gán output của mỗi lần lặp với từng giá trị
+  output = c(i, regionPopulation, percent(pRegionPopulation, accuracy = 0.0001))
+  # sử dụng rbind để nối đầu ra của lần lặp vào khung dữ liệu
+  df = rbind(df, output)
+}
+# đặt tên cột cho dataframe
+colnames(df)<-c("Region", "Population", "Percent Population")
+# hiển thị dataframe
+df
 
 
 
