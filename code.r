@@ -1,4 +1,4 @@
-data <- read.csv("F:\\[4 - HKI]Chuyên đề 5\\minority.csv")
+data <- read.csv("F:\\[4 - HKI]Chuyên đề 5\\middle_term\\minority.csv")
 
 colnames(data)
 # change column name
@@ -43,14 +43,12 @@ language_family_table
 language_family = names(language_family_table)
 
 
-
 for(i in 1:length(language_family)){
   print(language_family[i])
   mi_name <- data$Minority_Name[data$Language_family == language_family[i]]
   print(mi_name)
   cat("\n")
 }
-
 
 
 View(data)
