@@ -3,6 +3,7 @@ library("tibble")
 library("stringr")
 
 data <- read.csv("F:\\[4 - HKI]Chuyên đề 5\\middle_term\\minorityclone.csv")
+#data <- read.csv("D:\\Năm 4\\Kỳ 1\\Chuyên đề 5\\Code R\\GiuaKy\\r_dataset_minority\\minorityclone.csv")
 colnames(data)
 #2 data cleaning
 # change column name
