@@ -1,8 +1,10 @@
 library(scales)
 
-data <- read.csv("F:\\[4 - HKI]Chuyên đề 5\\middle_term\\minorityclone.csv")
+#data <- read.csv("F:\\[4 - HKI]Chuyên đề 5\\middle_term\\minorityclone.csv")
+data <- read.csv("D:\\Năm 4\\Kỳ 1\\Chuyên đề 5\\Code R\\GiuaKy\\r_dataset_minority\\minorityclone.csv")
+
 colnames(data)
-#2 data cleaning
+#3 data cleaning
 # change column name
 data <- setNames(data, c("Id","Order","Minority_Name","Self_title", "Other_names","International_names","Local_group","Distribution","Population","Male","Female","Language","Language_group","Language_branch","Language_family","Region","General_information_about_traditional_costumes","Note"))
 
@@ -38,39 +40,62 @@ data$Language_family[data$Language_family %in% c("Tai-Kadai, Sino-Tibetan")] <- 
 # Tính phần trăm dân số của từng dân tộc thiểu số
 # tính tổng dân số của dân tộc thiểu số
 totalPopulation = sum(data$Population)
-totalPopulation
+totalMalePopulation = sum(data$Male)
+totalFemalePopulation = sum(data$Female)
 # tạo cột mới 'Population Percent' tính phần trăm dân số từng dân tộc 
 data$`Population_Percent` = (data$Population/totalPopulation)
 
+# tạo cột mới 'Male Percent' tính phần trăm dân số nam từng dân tộc 
+data$`Male_Percent` = (data$Male/data$Population)
+
+# tạo cột mới 'Female Percent' tính phần trăm dân số nữ từng dân tộc 
+data$`Female_Percent` = (data$Female/data$Population)
+
 # đổi định dạng sang phần trăm
-data$`Population_Percent` = percent(data$`Population_Percent`, accuracy = 0.0001)
+#data$`Population_Percent` = percent(data$`Population_Percent`, accuracy = 0.0001)
+#data$`Male_Percent` = percent(data$Male_Percent, accuracy = 0.1)
+#data$`Female_Percent` = percent(data$Female_Percent, accuracy = 0.1)
 
 #5 - Đặt câu hỏi nghiên cứu vấn đề cần biết trong dataset
 # Tính mỗi vùng miền có tổng số bao nhiêu dân, chiếm bao nhiêu phần trăm
-# đếm có bao nhiêu dân tộc của mỗi vùng miền
+# create table region from Region column
 region = table(data$Region)
 region
-# lấy tên các vùng miền
+# get all name region
 arrRegionNames = names(region)
 arrRegionNames
-# tạo dataframe mới
-df = data.frame()
+# create new dataframe
+df_region = data.frame()
 
-# dùng vòng lặp lấy tên các vùng miền để tính tổng dân số của vùng miền đó
+# loop for region names 
 for (i in arrRegionNames) {
-  # tính tổng dân số của vùng miền theo tên miền
+  
+  # calc sum population for region
   regionPopulation = sum(data$Population[data$Region == i])
-  # tính phần trăm dân số của vùng miền theo tên miền
-  pRegionPopulation = regionPopulation/totalPopulation
-  # gán output của mỗi lần lặp với từng giá trị
-  output = c(i, regionPopulation, percent(pRegionPopulation, accuracy = 0.0001))
-  # sử dụng rbind để nối đầu ra của lần lặp vào khung dữ liệu
-  df = rbind(df, output)
+  malePopulation = sum(data$Male[data$Region == i])
+  femalePopulation = sum(data$Female[data$Region == i])
+  
+  
+  
+  # cal population percent for each region, male, female
+  pRegionPopulation = sum(data$Population_Percent[data$Region == i])
+  pMalePopulation = malePopulation/regionPopulation
+  pFemalePopulation = femalePopulation/regionPopulation
+  
+  # Assign value to output
+  output = c(i, regionPopulation, 
+             percent(pRegionPopulation, accuracy = 0.0001), 
+             percent(pMalePopulation, accuracy = 0.01),
+             percent(pFemalePopulation, accuracy = 0.01))
+  
+  # Assign value to df_region by using rbind 
+  df_region = rbind(df_region, output)
 }
-# đặt tên cột cho dataframe
-colnames(df)<-c("Region", "Population", "Percent Population")
-# hiển thị dataframe
-df
+# set name for column in df_region
+colnames(df_region)<-c("Region", "Population", "Population.percent", "Male.percent", "Female.percent")
+
+# print df_region
+df_region
 
 df_lang_Famly = data.frame()
 
